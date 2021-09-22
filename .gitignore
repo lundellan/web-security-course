@@ -6,7 +6,9 @@
 !.gitignore
 !README.md
 
-!www/*
+!www/favicon.ico
+!www/webshop/
+!www/webshop/*
 
 !bin/apache/apache2.4.46/bin/php.ini
 !bin/apache/apache2.4.46/conf/httpd.conf
