@@ -3,6 +3,6 @@
 !.gitignore
 !README.md
 
-!htdocs
+!htdocs/*
 !php/php.ini
 !apache/conf/httpd.conf
