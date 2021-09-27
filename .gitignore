@@ -1,7 +1,6 @@
 *
 
 !.gitignore
-!README.md
 !php/php.ini
 !apache/conf/httpd.conf
 
