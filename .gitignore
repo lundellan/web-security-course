@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+!README.md
+
+!htdocs
+!php/php.ini
+!apache/conf/httpd.conf
