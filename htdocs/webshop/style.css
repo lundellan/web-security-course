@@ -13,6 +13,13 @@ body {
 header  {
   float: left;
   width: 100%;
+  margin-bottom: 20px;
+}
+
+header img  {
+  float: left;
+  height: 70px;
+  margin-right: 10px;
 }
 
 main {
@@ -28,6 +35,19 @@ main div {
   background-color: #9c9c9c;
   border-radius: 10px;
   overflow: hidden;
+}
+
+main div .contents {
+  float: left;
+  padding: 0 10px 20px 10px;
+  width: calc(100% - 20px);
+}
+
+main div h4 span  {
+  color: #f2a900;
+  background: #fff;
+  padding: 3px;
+  border-radius: 5px;
 }
 
 nav  {

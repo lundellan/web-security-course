@@ -7,15 +7,12 @@
   <body>
     <?php 
       include 'actions.php';
-
-      if (validate_session()) {
-        echo "Hej " . $_COOKIE['signed_in'];
-      }
     ?>
 
     <div id="page">
       <header>
-        <h1>Web Shop</h1>
+        <img src="./media/mallory.jpg">
+        <h1>Mallory Shop</h1>
       </header>
 
       <main>
@@ -24,6 +21,7 @@
           
           <div class="contents">
             <h3>Flash vulnerabilities</h3>
+            <h4>Special price:<br><br> <span>&#8383;0,0012</span></h4>
 
             <form method="post" action="add_to_cart.php">
               <input type=submit name="add_to_cart" value="Add to cart">
@@ -34,7 +32,8 @@
           <img src="./media/leaked_emails.jpg" style="height: 200px; width: 100%;">
 
           <div class="contents">
-            <h3>Leaked emails and passwords 2021</h3>
+            <h3>Leaked email accounts</h3>
+            <h4>Special price:<br><br> <span>&#8383;0,0024</span></h4>
 
             <form method="post" action="add_to_cart.php">
               <input type=submit name="add_to_cart" value="Add to cart">
@@ -46,6 +45,7 @@
 
           <div class="contents">
             <h3>XSS scripts</h3>
+            <h4>Special price:<br><br> <span>&#8383;0,0036</span></h4>
 
             <form method="post" action="add_to_cart.php">
               <input type=submit name="add_to_cart" value="Add to cart">
@@ -57,6 +57,7 @@
 
           <div class="contents">
             <h3>DDoS-as-a-service</h3>
+            <h4>Special price:<br><br> <span>&#8383;0,0006/hour</span></h4>
 
             <form method="post" action="add_to_cart.php">
               <input type=submit name="add_to_cart" value="Add to cart">
@@ -69,6 +70,8 @@
         <?php 
           if (validate_session()) { 
         ?>
+
+        <h4>Welcome, <?php echo $_COOKIE['signed_in'] ?></h4>
 
         <section>
           <h2>Cart</h2>
