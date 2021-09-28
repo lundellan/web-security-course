@@ -24,8 +24,10 @@ main {
 }
 
 main div {
-  height: 250px;
-  background-color: #654321;
+  float: left;
+  background-color: #9c9c9c;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 nav  {

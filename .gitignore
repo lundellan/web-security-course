@@ -7,6 +7,10 @@
 htdocs/*
 !htdocs/webshop/
 !/htdocs/webshop/*
+!/htdocs/webshop/db/
+!/htdocs/webshop/db/*
+!/htdocs/webshop/media/
+!/htdocs/webshop/media/*
 
 !apache
 apache/*
