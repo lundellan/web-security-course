@@ -17,10 +17,7 @@
 
   # Validates if a session is active
   function validate_session() {
-    if (isset($_COOKIE['signed_in'])) {
-      return true;
-    }
-    return false;
+    return isset($_SESSION['username']);
   }
 
   function refresh_page() {
@@ -43,8 +40,10 @@
         if (mysqli_num_rows($result) == 1) {
           $row = $result -> fetch_assoc();
           if ($row["password"] == $password)  {
-            setcookie("signed_in", $username, time()+60*60*24*30, "/", "localhost", false, false);
-            refresh_page();
+            // setcookie("signed_in", $username, time()+60*60*24*30, "/", "localhost", false, false);
+            // session_register('username');
+            $_SESSION['username'] = $username;
+            // refresh_page();
           } else{
             echo "Incorrect password."; // Does currently not work
           }
@@ -59,13 +58,15 @@
 
   # User is signed out by destroying the session cookie
   function sign_out() {
-    if(isset($_POST['sign_out'])) {	
-      if (isset($_COOKIE['signed_in'])) {
-        unset($_COOKIE['signed_in']); 
-        setcookie('signed_in', "", -1, '/'); 
-        refresh_page();
-      }
-    }
+    // if(isset($_POST['sign_out'])) {	
+    //   if (isset($_COOKIE['signed_in'])) {
+    //     unset($_COOKIE['signed_in']); 
+    //     setcookie('signed_in', "", -1, '/'); 
+    //     refresh_page();
+    //   }
+    // }
+    unset($_SESSION['username']);
+    session_destroy();
   }
 
   # Creates a new account

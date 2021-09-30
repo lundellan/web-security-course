@@ -6,7 +6,9 @@
   </head>
   <body>
     <?php 
+      session_start();
       include 'actions.php';
+      echo $_SESSION['username'];
     ?>
 
     <div id="page">
@@ -71,7 +73,7 @@
           if (validate_session()) { 
         ?>
 
-        <h4>Welcome, <?php echo $_COOKIE['signed_in'] ?></h4>
+        <h4>Welcome, <?php echo $_SESSION['username'] ?></h4>
 
         <section>
           <h2>Cart</h2>
