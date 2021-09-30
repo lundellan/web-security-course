@@ -21,3 +21,10 @@ apache/conf/*
 !php
 php/*
 !php/php.ini
+
+!mysql
+mysql/*
+!mysql/data/
+mysql/data/*
+!mysql/data/webshop
+!mysql/data/webshop/*
