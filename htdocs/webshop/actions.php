@@ -93,18 +93,31 @@
   }
 
   function add_to_cart() {
-    if(isset($_POST['productId'])) {
+    if(isset($_POST['productId']) && is_numeric($_POST['productId'])) {
       $productId = intval($_POST['productId']);
-      if (!empty($_SESSION['cart'])) {
-        foreach($_SESSION['cart'] as $addedItems) {
-          // print_r($addedItems);
-          if (!$addedItems[0]['id'] == $productId)  {
-            $_SESSION['cart'][] = get_items([$productId]);
-          }
+      if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+        if(!array_key_exists($productId,$_SESSION['cart'])) {
+          $_SESSION['cart'][$productId] = get_items([$productId])[0];
         }
-      } else  {
-        $_SESSION['cart'][] = get_items([$productId]);
       }
+      else {
+        $_SESSION['cart'] = array($productId => get_items([$productId])[0]);
+      }
+    }
+  }
+
+  function remove_from_cart() {
+    if(isset($_POST['productId']) && is_numeric($_POST['productId'])) {
+      $productId = intval($_POST['productId']);
+      if (isset($_SESSION['cart']) && isset($_SESSION['cart'][$productId])) {
+        unset($_SESSION['cart'][$productId]);
+      }
+    }
+  }
+
+  function empty_cart() {
+    if(isset($_SESSION["cart"])) {
+      unset($_SESSION["cart"]);
     }
   }
 

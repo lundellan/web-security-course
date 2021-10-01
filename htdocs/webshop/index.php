@@ -7,15 +7,19 @@
   <body>
     <?php 
       session_start();
-      // unset($_SESSION['cart']);
       include 'actions.php';
       include 'components.php';
-      // print_r($_POST);
       if(isset($_POST['add_to_cart'])) {
         add_to_cart();
+        header("Location: /webshop/"); // Prevent form resubmit
       }
-      if (isset($_SESSION['cart'])) {
-        print_r($_SESSION['cart']);
+      if(isset($_POST['remove_from_cart'])) {
+        remove_from_cart();
+        header("Location: /webshop/"); // Prevent form resubmit
+      }
+      if(isset($_POST['empty_cart'])) {
+        empty_cart();
+        header("Location: /webshop/"); // Prevent form resubmit
       }
     ?>
 

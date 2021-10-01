@@ -50,21 +50,56 @@
   }
 
   function signed_in_navigation() {
-    echo '
+    ?>
       <section>
-        <h2>Cart</h2>
-        <form method="post" action="checkout.php">
-          <input type=submit name="submit" value="Finish order">
+        <h2>Shopping Cart</h2>
+        <form method="post" action="">
+          <table>
+              <tbody>
+                  <?php if (empty($_SESSION['cart'])): ?>
+                  <tr>
+                      <td colspan="2" style="text-align:center;">You have no products added in your Shopping Cart</td>
+                  </tr>
+                  <?php else: ?>
+                  <?php
+                  $total_price = 0;
+                  foreach ($_SESSION['cart'] as $product) {
+                      $total_price += $product['price'];
+                  ?>
+                  <tr>
+                      <td>
+                          <?=$product['title']?>
+                          <br>
+                          <form method="post" action="">
+                              <input type="hidden" name="productId" value="<?=$product['id']?>">
+                              <button type='submit' name='remove_from_cart' value='remove'>Remove</button>
+                          </form>
+                      </td>
+                      <td>&#8383;<?=$product['price']?></td>
+                  </tr>
+                  <?php } ?>
+                  <tr>
+                      <td style="text-align:right;">Order total:</td>
+                      <td>&#8383;<?=$total_price?></td>
+                  </tr>
+                  <?php endif; ?>
+              </tbody>
+          </table>
+          <?php if (!empty($_SESSION['cart'])): ?>
+            <input type="submit" value="Empty Cart" name="empty_cart">
+            <input type="button" value="Finish order" onclick="window.location='/webshop/checkout.php'" />
+          <?php endif; ?>
         </form>
       </section>
-
-      <section>
+    
+    <section>
         <h2>Account</h2>
-        <form method="post" action=' . sign_out() . '>
+        Welcome, <?= $_COOKIE['signed_in']?>
+        <form method="post" action='<?php sign_out() ?>'>
           <input type=submit name="sign_out" value="Sign out">
         </form>
       </section>
-    ';
+    <?php
   }
 
   function items_grid_component($items = []) {
