@@ -76,7 +76,7 @@
   function item_component($item)  {
     echo '
       <div>
-        <img src=' . $item["img_url"] . ' style="height: 200px; width: 100%;">
+        <img src=' . $item["img_url"] . '>
         
         <div class="contents">
           <h3>' . $item["title"] . '</h3>

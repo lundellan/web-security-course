@@ -37,6 +37,14 @@ main div {
   overflow: hidden;
 }
 
+main div img  {
+  float: left;
+  height: 200px; 
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 main div .contents {
   float: left;
   padding: 0 10px 20px 10px;
