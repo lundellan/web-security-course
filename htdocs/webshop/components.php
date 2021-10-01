@@ -82,8 +82,8 @@
           <h3>' . $item["title"] . '</h3>
           <h4>Special price:<br><br> <span>&#8383;' . $item["price"] . '</span></h4>
 
-          <form method="post" action=' . add_to_cart() . '>
-            <input type="hidden" name="id" value=' . $item["id"] . ' />
+          <form method="post" action="">
+            <input type="hidden" name="productId" value=' . $item["id"] . ' />
             <input type=submit name="add_to_cart" value="Add to cart">
           </form>
         </div>

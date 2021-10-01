@@ -93,9 +93,18 @@
   }
 
   function add_to_cart() {
-    if(isset($_POST['add_to_cart'])) {
-      // $_SESSION['cart'][] = $_POST['id'];
-      print_r($_POST['id']);
+    if(isset($_POST['productId'])) {
+      $productId = intval($_POST['productId']);
+      if (!empty($_SESSION['cart'])) {
+        foreach($_SESSION['cart'] as $addedItems) {
+          // print_r($addedItems);
+          if (!$addedItems[0]['id'] == $productId)  {
+            $_SESSION['cart'][] = get_items([$productId]);
+          }
+        }
+      } else  {
+        $_SESSION['cart'][] = get_items([$productId]);
+      }
     }
   }
 

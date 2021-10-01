@@ -7,8 +7,16 @@
   <body>
     <?php 
       session_start();
+      // unset($_SESSION['cart']);
       include 'actions.php';
       include 'components.php';
+      // print_r($_POST);
+      if(isset($_POST['add_to_cart'])) {
+        add_to_cart();
+      }
+      if (isset($_SESSION['cart'])) {
+        print_r($_SESSION['cart']);
+      }
     ?>
 
     <div id="page">
