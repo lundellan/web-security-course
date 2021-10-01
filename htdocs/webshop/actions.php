@@ -28,6 +28,7 @@
   }
 
   # User is signed in by setting a session cookie
+  //ussecure, signing with "$username' #"
   function sign_in()  {
     $connection = db_connect();
 
@@ -35,19 +36,14 @@
       
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $query = "SELECT `password` FROM `users` WHERE username = '$username'";
+      $query = "SELECT * FROM `users` WHERE username = '$username' AND password = '$password'";
 
       $result = mysqli_query($connection, $query);
 
       if ($result)  {
         if (mysqli_num_rows($result) == 1) {
-          $row = $result -> fetch_assoc();
-          if ($row["password"] == $password)  {
             setcookie("signed_in", $username, time()+60*60*24*30, "/", "localhost", false, false);
             refresh_page();
-          } else{
-            echo "Incorrect password."; // Does currently not work
-          }
         } else {
           echo "Account does not exist."; // Does currently not work
         }
