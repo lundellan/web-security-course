@@ -1,23 +1,15 @@
+# Ignores everything
 *
 
+# Unignored files
+!.git
 !.gitignore
 !README.md
 
-!htdocs
-htdocs/*
-!htdocs/webshop/
-!/htdocs/webshop/*
-!/htdocs/webshop/db/
-!/htdocs/webshop/db/*
-!/htdocs/webshop/media/
-!/htdocs/webshop/media/*
+!www/favicon.ico
+!www/webshop/
+!www/webshop/*
 
-!apache
-apache/*
-!apache/conf
-apache/conf/*
-!apache/conf/httpd.conf
-
-!php
-php/*
-!php/php.ini
+!bin/apache/apache2.4.46/bin/php.ini
+!bin/apache/apache2.4.46/conf/httpd.conf
+© 2021 GitHub, Inc.
