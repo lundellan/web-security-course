@@ -18,13 +18,18 @@ body {
 header  {
   float: left;
   width: 100%;
-  margin-bottom: 20px;
 }
 
 header img  {
   float: left;
   height: 70px;
   margin-right: 10px;
+}
+
+header h2 {
+  float: left;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 main {

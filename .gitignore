@@ -5,6 +5,8 @@
 
 !htdocs
 htdocs/*
+!htdocs/attacker/
+!/htdocs/attacker/*
 !htdocs/webshop/
 !/htdocs/webshop/*
 !/htdocs/webshop/db/

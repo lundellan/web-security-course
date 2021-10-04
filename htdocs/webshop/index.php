@@ -3,6 +3,8 @@
   include 'actions.php';
   include 'components.php';
   update_cart();
+  $visibleItems = update_items();
+  print_r($_POST)
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +15,7 @@
   </head>
   <body>
     <header><?php header_component();?></header>
-    <main><?php items_component();?></main>
+    <main><?php items_component($visibleItems);?></main>
     <nav><?php navigation_component()?></nav>
   </body>
 </html>

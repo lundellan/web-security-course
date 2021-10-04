@@ -5,6 +5,13 @@
     ?>
       <img src="./media/mallory.jpg">
       <h1>Mallory Shop</h1>
+      <h2>
+        <?php
+          if (isset($_GET['keyword'])) {
+            echo "Showing results for: " . $_GET['keyword'];
+          }
+          ?> 
+      </h2> 
     <?php
   }
 
@@ -33,6 +40,7 @@
 
   # Creates the right hand side navigation
   function navigation_component()  {
+    search_component();
     if (validate_session()) {
       cart_component();
       account_component();
@@ -40,6 +48,19 @@
       sign_in_component();
       create_account_component();
     }
+  }
+
+  function search_component() {
+    ?>
+      <section>
+        <h2>Search</h2>
+        <form method="get" action="">
+          Search items
+          <input type="text" size="12" name="keyword"><br /><br />
+          <input type="submit" value="Search">
+        </form>
+      </section>
+    <?php
   }
 
   # Creates the cart and order summary section
@@ -109,7 +130,9 @@
     ?>
       <section>
         <h2>Account</h2>
-        Welcome back! Signed in as: <?=$_SESSION['user']?><br>
+        Welcome back!<br>
+        Signed in as: <?=$_SESSION['user']?><br>
+        Home address: <?=$_SESSION['home_address']?><br>
         <form method="post" action='<?=sign_out()?>' style="padding-top: 10px;">
           <input type=submit name="sign_out" value="Sign out">
         </form>

@@ -35,15 +35,22 @@
       
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $query = "SELECT `password` FROM `users` WHERE username = '$username'";
+      $query = "SELECT * FROM `users` WHERE username = '$username' AND password = '$password'";
 
       $result = mysqli_query($connection, $query);
       $row = $result -> fetch_assoc();
 
       if ($result)  {
-        if (mysqli_num_rows($result) == 1 && $row["password"] == $password) {
-            $_SESSION['user'] = $username;
+        if (mysqli_num_rows($result) == 1) {
+            $_SESSION['user'] = $row['username'];
+            $_SESSION['home_address'] = $row["home_address"];
             refresh_page();
+            ?>
+              <script>
+                window.location.href="../webshop/";
+                alert('Order placed!');
+              </script>
+            <?php
         } else { // Funkar inte
           ?>
           <script>
@@ -79,22 +86,48 @@
 
       $insert = mysqli_query($connection, $query);
 
-      if(!$insert)  { // Mecka med denna
-        // echo mysqli_error();
-        echo "User could not be created.";
-      } else  {
-        echo "User created successfully.";
-      }
+      // if(!$insert)  { // Mecka med denna
+      //   // echo mysqli_error();
+      //   echo "User could not be created.";
+      // } else  {
+      //   echo "User created successfully.";
+      // }
     }
 
     db_disconnect($connection);
+  }
+
+  function update_items() {
+    $results_array = [];
+
+    if(isset($_GET['keyword'])) {
+      $connection = db_connect();
+
+      if (isset($_GET['keyword']))  {
+        $keyword = $_GET['keyword'];
+        $query = "SELECT id FROM catalogue WHERE title LIKE '%$keyword%'";
+
+        $result = mysqli_query($connection, $query);
+    
+        if ($result)  {
+          while($row = mysqli_fetch_assoc($result)) {
+            $results_array[] = $row['id'];
+          }
+        }
+
+        db_disconnect($connection);
+      }
+      
+    }
+
+    return $results_array;
   }
 
    # Updates cart after new POST-action
    function update_cart()  {
     if(isset($_POST['add_to_cart'])) {
       add_to_cart();
-      refresh_page();
+      // refresh_page();
     }
     if(isset($_POST['remove_from_cart'])) {
       remove_from_cart();
@@ -141,6 +174,7 @@
   function finish_order() {
     if(isset($_POST['place_order'])): 
       empty_cart();
+      echo $_GET['name'];
     ?>
       <script>
         window.location.href="../webshop/";
