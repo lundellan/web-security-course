@@ -4,7 +4,6 @@
   include 'components.php';
   update_cart();
   $visibleItems = update_items();
-  print_r($_POST)
 ?>
 
 <!DOCTYPE html>
