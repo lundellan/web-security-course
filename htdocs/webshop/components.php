@@ -50,6 +50,7 @@
     }
   }
 
+  # Creates the search section
   function search_component() {
     ?>
       <section>
@@ -165,12 +166,6 @@
           Choose your username
           <input type="text" size="12" name="username"><br /><br />
           Choose your password
-          <!-- <i>it should at least contain the following:</i><br>
-          <ul>
-            <li>eight characters in total,</li>
-            <li>one capital letter,</li>
-            <li>and one digit.</li>
-          </ul> -->
           <input type="password" size="12" name="password"><br /><br />
           Enter your home address
           <input type="text" size="12" name="home_address"><br /><br />

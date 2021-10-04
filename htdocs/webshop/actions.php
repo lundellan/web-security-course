@@ -46,19 +46,6 @@
             $_SESSION['user'] = $row['username'];
             $_SESSION['home_address'] = $row["home_address"];
             refresh_page();
-            ?>
-              <script>
-                window.location.href="../webshop/";
-                alert('Order placed!');
-              </script>
-            <?php
-        } else { // Funkar inte
-          ?>
-          <script>
-            window.location.href="../webshop/";
-            alert('Order placed!');
-          </script>
-        <?php
         }
       }
     };
@@ -85,19 +72,13 @@
       $home_address = $_POST['home_address'];
       $query = "INSERT INTO `users`(`username`, `password`, `home_address`) VALUES ('$username','$password', '$home_address')";
 
-      $insert = mysqli_query($connection, $query);
-
-      // if(!$insert)  { // Mecka med denna
-      //   // echo mysqli_error();
-      //   echo "User could not be created.";
-      // } else  {
-      //   echo "User created successfully.";
-      // }
+      mysqli_query($connection, $query);
     }
 
     db_disconnect($connection);
   }
 
+  # Updates the visible products according to the given keyword
   function update_items() {
     $results_array = [];
 
@@ -175,11 +156,10 @@
   function finish_order() {
     if(isset($_POST['place_order'])): 
       empty_cart();
-      echo $_GET['name'];
     ?>
       <script>
-        window.location.href="../webshop/";
         alert('Order placed!');
+        window.location.href="../webshop/";
       </script>
     <?php
     endif;
