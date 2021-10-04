@@ -17,16 +17,16 @@
 
   # Validates if a session is active
   function validate_session() {
-    if (isset($_COOKIE['signed_in'])) {
+    if (isset($_SESSION['user'])) {
       return true;
     }
     return false;
   }
 
+  # Refreshes the page
   function refresh_page() {
-    header("Location: /webshop/");
+    header("Location: $_SERVER[REQUEST_URI]");
   }
-
   # User is signed in by setting a session cookie
   function sign_in()  {
     $connection = db_connect();
@@ -38,18 +38,19 @@
       $query = "SELECT `password` FROM `users` WHERE username = '$username'";
 
       $result = mysqli_query($connection, $query);
+      $row = $result -> fetch_assoc();
 
       if ($result)  {
-        if (mysqli_num_rows($result) == 1) {
-          $row = $result -> fetch_assoc();
-          if ($row["password"] == $password)  {
-            setcookie("signed_in", $username, time()+60*60*24*30, "/", "localhost", false, false);
+        if (mysqli_num_rows($result) == 1 && $row["password"] == $password) {
+            $_SESSION['user'] = $username;
             refresh_page();
-          } else{
-            echo "Incorrect password."; // Does currently not work
-          }
-        } else {
-          echo "Account does not exist."; // Does currently not work
+        } else { // Funkar inte
+          ?>
+          <script>
+            window.location.href="../webshop/";
+            alert('Order placed!');
+          </script>
+        <?php
         }
       }
     };
@@ -60,11 +61,9 @@
   # User is signed out by destroying the session cookie
   function sign_out() {
     if(isset($_POST['sign_out'])) {	
-      if (isset($_COOKIE['signed_in'])) {
-        unset($_COOKIE['signed_in']); 
-        setcookie('signed_in', "", -1, '/'); 
-        refresh_page();
-      }
+      session_start();
+      session_destroy();
+      refresh_page();
     }
   }
 
@@ -76,12 +75,11 @@
       $username = $_POST['username'];
       $password = $_POST['password'];
       $home_address = $_POST['home_address'];
-
       $query = "INSERT INTO `users`(`username`, `password`, `home_address`) VALUES ('$username','$password', '$home_address')";
 
       $insert = mysqli_query($connection, $query);
 
-      if(!$insert)  {
+      if(!$insert)  { // Mecka med denna
         // echo mysqli_error();
         echo "User could not be created.";
       } else  {
@@ -92,6 +90,23 @@
     db_disconnect($connection);
   }
 
+   # Updates cart after new POST-action
+   function update_cart()  {
+    if(isset($_POST['add_to_cart'])) {
+      add_to_cart();
+      refresh_page();
+    }
+    if(isset($_POST['remove_from_cart'])) {
+      remove_from_cart();
+      refresh_page();
+    }
+    if(isset($_POST['empty_cart'])) {
+      empty_cart();
+      refresh_page();
+    }
+  }
+
+  # Adds an item to the cart
   function add_to_cart() {
     if(isset($_POST['productId']) && is_numeric($_POST['productId'])) {
       $productId = intval($_POST['productId']);
@@ -99,13 +114,13 @@
         if(!array_key_exists($productId,$_SESSION['cart'])) {
           $_SESSION['cart'][$productId] = get_items([$productId])[0];
         }
-      }
-      else {
+      } else {
         $_SESSION['cart'] = array($productId => get_items([$productId])[0]);
       }
     }
   }
 
+  # Removes an item to the cart
   function remove_from_cart() {
     if(isset($_POST['productId']) && is_numeric($_POST['productId'])) {
       $productId = intval($_POST['productId']);
@@ -115,12 +130,27 @@
     }
   }
 
+  # Empties all items from the cart
   function empty_cart() {
     if(isset($_SESSION["cart"])) {
       unset($_SESSION["cart"]);
     }
   }
 
+  # Finishes an order
+  function finish_order() {
+    if(isset($_POST['place_order'])): 
+      empty_cart();
+    ?>
+      <script>
+        window.location.href="../webshop/";
+        alert('Order placed!');
+      </script>
+    <?php
+    endif;
+  }
+
+  # Gets specified items from the database
   function get_items($items = []) {
     $connection = db_connect();
 
