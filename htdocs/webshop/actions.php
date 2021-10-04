@@ -127,7 +127,7 @@
    function update_cart()  {
     if(isset($_POST['add_to_cart'])) {
       add_to_cart();
-      // refresh_page();
+      refresh_page();
     }
     if(isset($_POST['remove_from_cart'])) {
       remove_from_cart();

