@@ -3,19 +3,17 @@
   include 'actions.php';
   include 'components.php';
   update_cart();
-  $visibleItems = update_items();
+  finish_order();
 ?>
 
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Mallory Shop</title>
+    <title>Mallory Shop - Checkout</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <header><?php header_component();?></header>
-    <main><?php items_component($visibleItems);?></main>
-    <nav><?php navigation_component()?></nav>
+    <nav><?php cart_component(false); payment_component();?></nav>
   </body>
 </html>
-
