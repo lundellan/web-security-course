@@ -35,15 +35,19 @@
       
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $query = "SELECT * FROM `users` WHERE username = '$username' AND password = '$password'";
+      $query = "SELECT * FROM `users` WHERE username = ?";
 
-      $result = mysqli_query($connection, $query);
-      $row = $result -> fetch_assoc();
+      $stmt = $connection->prepare($query);
+      $stmt->bind_param("s", $username);
+      $stmt->execute();
+
+      $result = $stmt->get_result();
+      $row = $result->fetch_assoc();
 
       if ($result)  {
-        if (mysqli_num_rows($result) == 1) {
+        if (mysqli_num_rows($result) == 1 && password_verify($_POST['password'], $row['password'])) {
             $_SESSION['user'] = $row['username'];
-            $_SESSION['home_address'] = $row["home_address"];
+            $_SESSION['home_address'] = $row["home_address"]; 
             refresh_page();
         }
       }
@@ -66,12 +70,25 @@
     $connection = db_connect();
 
     if(isset($_POST['create_account'])) {		
-      $username = $_POST['username'];
-      $password = $_POST['password'];
-      $home_address = $_POST['home_address'];
-      $query = "INSERT INTO `users`(`username`, `password`, `home_address`) VALUES ('$username','$password', '$home_address')";
+      $username = htmlspecialchars($_POST['username']);
+      $options = [
+        'cost' => 10
+      ];
+      $password = password_hash(htmlspecialchars($_POST['password']), PASSWORD_BCRYPT, $options);
+      $home_address = htmlspecialchars($_POST['home_address']);
+      $query = "INSERT INTO `users`(`username`, `password`, `home_address`) VALUES (?,?, ?)";
 
-      mysqli_query($connection, $query);
+      $stmt = $connection->prepare($query);
+      $stmt->bind_param("sss", $username, $password, $home_address);
+      $stmt->execute();
+
+      // $result = $stmt->get_result();
+
+      // print_r($result);
+
+      // if ($result)  {
+      //   ?> <script>alert('Account created.')</script> <?php
+      // }
     }
 
     db_disconnect($connection);
@@ -84,21 +101,22 @@
     if(isset($_GET['keyword'])) {
       $connection = db_connect();
 
-      if (isset($_GET['keyword']))  {
-        $keyword = $_GET['keyword'];
-        $query = "SELECT id FROM catalogue WHERE title LIKE '%$keyword%'";
+      $keyword = "%{$_GET['keyword']}%";
+      $query = "SELECT id FROM catalogue WHERE title LIKE ?";
 
-        $result = mysqli_query($connection, $query);
-    
-        if ($result)  {
-          while($row = mysqli_fetch_assoc($result)) {
-            $results_array[] = $row['id'];
-          }
+      $stmt = $connection->prepare($query);
+      $stmt->bind_param("s", $keyword);
+      $stmt->execute();
+
+      $result = $stmt->get_result();
+  
+      if ($result)  {
+        while($row = mysqli_fetch_assoc($result)) {
+          $results_array[] = $row['id'];
         }
-
-        db_disconnect($connection);
       }
-      
+
+      db_disconnect($connection);
     }
 
     return $results_array;
@@ -168,20 +186,28 @@
   function get_items($items = []) {
     $connection = db_connect();
 
+    $type = "";
     $query = "SELECT * FROM `catalogue`";
 
     for ($x = 0; $x < sizeof($items); $x++)  {
+      $type .= "s";
       if ($x == 0) {
-        $query .= " WHERE id = {$items[$x]}";
+        $query .= " WHERE id = ?";
       } else  {
-        $query .= " OR id = {$items[$x]}";
+        $query .= " OR id = ?";
       }
     }
 
-    $result = mysqli_query($connection, $query);
+    $stmt = $connection->prepare($query);
+    if (!sizeof($items) == 0)  {
+      $stmt->bind_param($type, ...$items);
+    }
+    $stmt->execute();
+
+    $result = $stmt->get_result();
     $results_array = [];
 
-    while($row = mysqli_fetch_assoc($result)) {
+    while($row = $result->fetch_assoc()) {
       $results_array[] = $row;
     }
     

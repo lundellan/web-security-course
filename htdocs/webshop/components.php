@@ -8,7 +8,7 @@
       <h2>
         <?php
           if (isset($_GET['keyword'])) {
-            echo "Showing results for: " . $_GET['keyword'];
+            echo "Showing results for: " . htmlspecialchars($_GET['keyword']);
           }
           ?> 
       </h2> 
