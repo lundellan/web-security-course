@@ -103,26 +103,34 @@
   function create_account() {
     $connection = db_connect();
 
-    if(isset($_POST['create_account'])) {		
-      $username = htmlspecialchars($_POST['username']);
-      $options = [
-        'cost' => 10
-      ];
-      $password = password_hash(htmlspecialchars($_POST['password']), PASSWORD_BCRYPT, $options);
-      $home_address = htmlspecialchars($_POST['home_address']);
-      $query = "INSERT INTO `users`(`username`, `password`, `home_address`) VALUES (?,?, ?)";
+    if(isset($_POST['create_account'])) {	
+      $password = htmlspecialchars($_POST['password']);
 
-      $stmt = $connection->prepare($query);
-      $stmt->bind_param("sss", $username, $password, $home_address);
-      $stmt->execute();
+      if (strlen($password) >= 8 && strlen($password) <= 72) {
+        $query = "SELECT count(*) as count FROM blacklist WHERE password = ?";
 
-      // $result = $stmt->get_result();
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param("s", $password);
+        $stmt->execute();
 
-      // print_r($result);
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
 
-      // if ($result)  {
-      //   ?> <script>alert('Account created.')</script> <?php
-      // }
+        if ($row['count'] == 0)  {
+          $username = htmlspecialchars($_POST['username']);
+          $options = [
+            'cost' => 10
+          ];
+          $password = password_hash(htmlspecialchars($_POST['password']), PASSWORD_BCRYPT, $options);
+          $home_address = htmlspecialchars($_POST['home_address']);
+
+          $query = "INSERT INTO `users`(`username`, `password`, `home_address`) VALUES (?,?, ?)";
+
+          $stmt = $connection->prepare($query);
+          $stmt->bind_param("sss", $username, $password, $home_address);
+          $stmt->execute();
+        }
+    }
     }
 
     db_disconnect($connection);

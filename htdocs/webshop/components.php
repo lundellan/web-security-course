@@ -185,7 +185,12 @@
         <form method="post" action="<?=create_account()?>">
           Choose your username
           <input type="text" size="12" name="username"><br /><br />
-          Choose your password
+          Choose your password,
+          <i>it should at least</i><br>
+          <ul>
+            <li>contain between 8 and 72 characters,</li>
+            <li>and not be considered a commonly used password.</li>
+          </ul>
           <input type="password" size="12" name="password"><br /><br />
           Enter your home address
           <input type="text" size="12" name="home_address"><br /><br />
