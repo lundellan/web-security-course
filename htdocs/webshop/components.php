@@ -7,7 +7,7 @@
       <h1>Mallory Shop</h1>
       <h2>
         <?php
-          if (isset($_GET['keyword'])) {
+          if (isset($_GET['keyword']) && $_GET['keyword'] != "") {
             echo "Showing results for: " . htmlspecialchars($_GET['keyword']);
           }
           ?> 
@@ -21,13 +21,12 @@
       ?>
         <div>
           <img src="<?=$item["img_url"]?>">
-
           <div class="contents">
             <h3><?=$item["title"]?></h3>
             <h4>Special price: <span>&#8383;<?=$item["price"]?></span></h4>
-
             <?php if (validate_session()): ?>
               <form method="post" action="">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'];?>" />
                 <input type="hidden" name="productId" value="<?=$item["id"]?>"/>
                 <input type=submit name="add_to_cart" value="Add to cart">
               </form>
@@ -91,6 +90,7 @@
                       <?=$product['title']?><br>
                       <?php if ($index): ?>
                       <form method="post" action="">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'];?>" />
                         <input type="hidden" name="productId" value="<?=$product['id']?>">
                         <button type='submit' name='remove_from_cart' value='remove'>Remove</button>
                       </form>
@@ -116,6 +116,7 @@
 
           <?php if (!empty($_SESSION['cart']) && $index): ?>
             <form method="post" action="">
+              <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'];?>" />
               <input type="submit" value="Empty cart" name="empty_cart">
               <input type="button" value="Finish order" onclick="window.location='/webshop/checkout.php'" />
             </form>
@@ -134,6 +135,7 @@
         Welcome back!<br>
         Signed in as: <?=$_SESSION['user']?><br>
         Home address: <?=$_SESSION['home_address']?><br>
+        CSFR-Token: <?= $_SESSION['csrf_token']?><br /> <!-- temp debug -->
         <form method="post" action='<?=sign_out()?>' style="padding-top: 10px;">
           <input type=submit name="sign_out" value="Sign out">
         </form>
@@ -143,14 +145,32 @@
 
   # Creates the sign in section
   function sign_in_component()  {
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
+    $options = array();
+    $options['disable_flash_fallback'] = true;
+    $options['show_audio_button'] = false;
+    $options['input_text'] = 'Type the text above';
+    //$options['icon_size'] = 24;
+    if (!empty($_SESSION['si_form']['captcha_error'])) {
+      $options['error_html'] = $_SESSION['si_form']['captcha_error'];
+    }
     ?>
       <section>
         <h2>Sign in</h2>
         <form method="post" action="<?=sign_in()?>">
-          Username 
-          <input type="text" size="12" name="username"><br /><br />
+          Username
+          <input type="text" size="12" name="username">
+          <?= $_SESSION['si_form']['username_error'] ?>
+          <br /><br />
           Password 
           <input type="password" size="12" name="password"><br /><br />
+
+          <!-- <img id="captcha" src="../securimage/securimage_show.php" alt="CAPTCHA Image" />
+          <input type="text" name="captcha_code" size="10" maxlength="6" /> -->
+          <!-- <a href="#" onclick="document.getElementById('captcha_image').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a> -->
+          <div>
+            <?= Securimage::getCaptchaHtml($options)?>
+          </div>
           <input type=submit name="sign_in" value="Sign in">
         </form>
       </section>
@@ -181,6 +201,7 @@
       <section>
         <h2>Payment</h2>
         <form method="post" action="">
+          <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'];?>" />
           Full name
           <input type="text" size="12" name="name"><br /><br />
           Credit card number

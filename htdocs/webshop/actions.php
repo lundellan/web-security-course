@@ -27,39 +27,73 @@
   function refresh_page() {
     header("Location: $_SERVER[REQUEST_URI]");
   }
+
+  # Verify the CSRF token
+  function valid_csrf_token() {
+    if (!empty($_POST['csrf_token'])) {
+      return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+    }
+    return false;
+  }
+
   # User is signed in by setting a session cookie
   function sign_in()  {
-    $connection = db_connect();
-
     if(isset($_POST['sign_in'])) {	
-      
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $query = "SELECT * FROM `users` WHERE username = ?";
+      $_SESSION['si_form'] = array();
+      $errors = array();
 
-      $stmt = $connection->prepare($query);
-      $stmt->bind_param("s", $username);
-      $stmt->execute();
+      if (strlen($username) == 0) {
+        $errors['username_error'] = 'Your username is required';
+      }
 
-      $result = $stmt->get_result();
-      $row = $result->fetch_assoc();
-
-      if ($result)  {
-        if (mysqli_num_rows($result) == 1 && password_verify($_POST['password'], $row['password'])) {
-            $_SESSION['user'] = $row['username'];
-            $_SESSION['home_address'] = $row["home_address"]; 
-            refresh_page();
+      if (strlen($password) == 0) {
+        $errors['password_error'] = 'Your password is required';
+      }
+      if (sizeof($errors) == 0) {
+          include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
+          $securimage = new Securimage();
+          if ($securimage->check($_POST['captcha_code']) == false) {
+          //$_SESSION['si_form']['captcha_error'] = '<span class="error">Incorrect security code entered</span>';
+          $errors['captcha_error'] = 'Incorrect security code entered';
+          //return; //fix error array and show error msgs
         }
       }
-    };
 
-    db_disconnect($connection);
+      if (sizeof($errors) == 0) {
+        $connection = db_connect();
+        $query = "SELECT * FROM `users` WHERE username = ?";
+
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+  
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+  
+        if ($result)  {
+          if (mysqli_num_rows($result) == 1 && password_verify($_POST['password'], $row['password'])) {
+            session_regenerate_id();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            $_SESSION['user'] = $row['username'];
+            $_SESSION['home_address'] = $row["home_address"];
+            refresh_page();
+          }
+        }
+        db_disconnect($connection);
+      } else {
+        foreach($errors as $key => $error) {
+          $_SESSION['si_form'][$key] = "<span class=\"error\">$error</span";
+        }
+        $_SESSION['si_form']['error'] = true; //kolla om behövs?
+      }
+    }
   }
 
   # User is signed out by destroying the session cookie
   function sign_out() {
     if(isset($_POST['sign_out'])) {	
-      session_start();
       session_destroy();
       refresh_page();
     }
@@ -98,7 +132,7 @@
   function update_items() {
     $results_array = [];
 
-    if(isset($_GET['keyword'])) {
+    if(isset($_GET['keyword']) && $_GET['keyword'] != "") {
       $connection = db_connect();
 
       $keyword = "%{$_GET['keyword']}%";
@@ -124,15 +158,15 @@
 
    # Updates cart after new POST-action
    function update_cart()  {
-    if(isset($_POST['add_to_cart'])) {
+    if(isset($_POST['add_to_cart']) && valid_csrf_token()) {
       add_to_cart();
       refresh_page();
     }
-    if(isset($_POST['remove_from_cart'])) {
+    if(isset($_POST['remove_from_cart']) && valid_csrf_token()) {
       remove_from_cart();
       refresh_page();
     }
-    if(isset($_POST['empty_cart'])) {
+    if(isset($_POST['empty_cart']) && valid_csrf_token()) {
       empty_cart();
       refresh_page();
     }
@@ -171,7 +205,7 @@
 
   # Finishes an order
   function finish_order() {
-    if(isset($_POST['place_order'])): 
+    if(isset($_POST['place_order']) && valid_csrf_token()): 
       empty_cart();
     ?>
       <script>
