@@ -7,6 +7,8 @@
 htdocs/*
 !htdocs/attacker/
 !/htdocs/attacker/*
+!htdocs/securimage/
+!/htdocs/securimage/*
 !htdocs/webshop/
 !/htdocs/webshop/*
 !/htdocs/webshop/db/

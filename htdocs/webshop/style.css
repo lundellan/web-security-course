@@ -106,3 +106,9 @@ span.error {
   color: #f00;
   font-style: italic;
 }
+
+div.error {
+  display: block;
+  color: #f00;
+  font-style: italic;
+}

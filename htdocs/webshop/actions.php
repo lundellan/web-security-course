@@ -84,7 +84,7 @@
         db_disconnect($connection);
       } else {
         foreach($errors as $key => $error) {
-          $_SESSION['si_form'][$key] = "<span class=\"error\">$error</span";
+          $_SESSION['si_form'][$key] = "<span class=\"error\">$error</span>";
         }
         $_SESSION['si_form']['error'] = true; //kolla om behövs?
       }

@@ -4,7 +4,8 @@
   include 'components.php';
   update_cart();
   $visibleItems = update_items();
-?>
+  //$_SESSION['si_form'] = array();
+  ?>
 
 <!DOCTYPE html>
 <html>
@@ -18,4 +19,6 @@
     <nav><?php navigation_component()?></nav>
   </body>
 </html>
-
+<?php
+  $_SESSION['si_form'] = array();
+?>

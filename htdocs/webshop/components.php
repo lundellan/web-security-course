@@ -151,7 +151,8 @@
     $options['show_audio_button'] = false;
     $options['input_text'] = 'Type the text above';
     //$options['icon_size'] = 24;
-    if (!empty($_SESSION['si_form']['captcha_error'])) {
+    if (isset($_SESSION['si_form']['captcha_error'])) {
+      //$options['error_html'] = "hej";
       $options['error_html'] = $_SESSION['si_form']['captcha_error'];
     }
     ?>
@@ -160,11 +161,18 @@
         <form method="post" action="<?=sign_in()?>">
           Username
           <input type="text" size="12" name="username">
-          <?= $_SESSION['si_form']['username_error'] ?>
+          <?php if(isset($_SESSION['si_form']['username_error'])) {
+            echo $_SESSION['si_form']['username_error'];
+          }
+          ?>
           <br /><br />
           Password 
-          <input type="password" size="12" name="password"><br /><br />
-
+          <input type="password" size="12" name="password">
+          <?php if(isset($_SESSION['si_form']['password_error'])) {
+            echo $_SESSION['si_form']['password_error'];
+          }
+          ?>
+          <br /><br />
           <!-- <img id="captcha" src="../securimage/securimage_show.php" alt="CAPTCHA Image" />
           <input type="text" name="captcha_code" size="10" maxlength="6" /> -->
           <!-- <a href="#" onclick="document.getElementById('captcha_image').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a> -->
