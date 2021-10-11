@@ -9,6 +9,14 @@ htdocs/*
 !/htdocs/attacker/*
 !htdocs/securimage/
 !/htdocs/securimage/*
+!htdocs/securimage/backgrounds/
+!htdocs/securimage/backgrounds/*
+!htdocs/securimage/database/
+!htdocs/securimage/database/*
+!htdocs/securimage/images/
+!htdocs/securimage/images/*
+!htdocs/securimage/words/
+!htdocs/securimage/words/*
 !htdocs/webshop/
 !/htdocs/webshop/*
 !/htdocs/webshop/db/
