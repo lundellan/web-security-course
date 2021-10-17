@@ -135,7 +135,6 @@
         Welcome back!<br>
         Signed in as: <?=$_SESSION['user']?><br>
         Home address: <?=$_SESSION['home_address']?><br>
-        <!-- CSFR-Token: <?= $_SESSION['csrf_token']?><br /> -->
         <form method="post" action='<?=sign_out()?>' style="padding-top: 10px;">
           <input type=submit name="sign_out" value="Sign out">
         </form>
@@ -150,32 +149,16 @@
     $options['disable_flash_fallback'] = true;
     $options['show_audio_button'] = false;
     $options['input_text'] = 'Type the text above';
-    //$options['icon_size'] = 24;
-    /* if (isset($_SESSION['si_form']['captcha_error'])) {
-      //$options['error_html'] = "hej";
-      $options['error_html'] = $_SESSION['si_form']['captcha_error'];
-    } */
     ?>
       <section>
         <h2>Sign in</h2>
         <form method="post" action="<?=sign_in()?>">
           Username
           <input type="text" size="12" name="username">
-          <!-- <?php if(isset($_SESSION['si_form']['username_error'])) {
-            echo $_SESSION['si_form']['username_error'];
-          }
-          ?> -->
           <br /><br />
           Password 
           <input type="password" size="12" name="password">
-          <!-- <?php if(isset($_SESSION['si_form']['password_error'])) {
-            echo $_SESSION['si_form']['password_error'];
-          }
-          ?> -->
           <br /><br />
-          <!-- <img id="captcha" src="../securimage/securimage_show.php" alt="CAPTCHA Image" />
-          <input type="text" name="captcha_code" size="10" maxlength="6" /> -->
-          <!-- <a href="#" onclick="document.getElementById('captcha_image').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a> -->
           <div>
             <?= Securimage::getCaptchaHtml($options)?>
           </div>
@@ -214,7 +197,6 @@
       <section>
         <h2>Payment</h2>
         <form method="post" action="">
-          <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'];?>" />
           Full name
           <input type="text" size="12" name="name"><br /><br />
           Credit card number

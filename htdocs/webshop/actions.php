@@ -36,32 +36,29 @@
     return false;
   }
 
-  # User is signed in by setting a session cookie
+   # Sets the user as signed in in the session
+   function set_user_as_signed_in($username, $home_address) {
+    session_regenerate_id();
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    $_SESSION['user'] = $username;
+    $_SESSION['home_address'] = $home_address;
+    refresh_page();
+  }
+
+  # Checks user credentials
   function sign_in()  {
     if(isset($_POST['sign_in'])) {	
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $_SESSION['si_form'] = array();
-      $errors = array();
 
-      if (strlen($username) == 0) {
-        $errors['username_error'] = 'Your username is required';
+      include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
+      $securimage = new Securimage();
+      $captcha_valid = false;
+      if ($securimage->check($_POST['captcha_code']) == true) {
+        $captcha_valid = true;
       }
 
-      if (strlen($password) == 0) {
-        $errors['password_error'] = 'Your password is required';
-      }
-      if (sizeof($errors) == 0) {
-          include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
-          $securimage = new Securimage();
-          if ($securimage->check($_POST['captcha_code']) == false) {
-          //$_SESSION['si_form']['captcha_error'] = '<span class="error">Incorrect security code entered</span>';
-          $errors['captcha_error'] = 'Incorrect security code entered';
-          //return; //fix error array and show error msgs
-        }
-      }
-
-      if (sizeof($errors) == 0) {
+      if ($captcha_valid) {
         $connection = db_connect();
         $query = "SELECT * FROM `users` WHERE username = ?";
 
@@ -74,19 +71,10 @@
   
         if ($result)  {
           if (mysqli_num_rows($result) == 1 && password_verify($_POST['password'], $row['password'])) {
-            session_regenerate_id();
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-            $_SESSION['user'] = $row['username'];
-            $_SESSION['home_address'] = $row["home_address"];
-            refresh_page();
+            set_user_as_signed_in($row['username'], $row["home_address"]);
           }
         }
         db_disconnect($connection);
-      } else {
-        foreach($errors as $key => $error) {
-          $_SESSION['si_form'][$key] = "<span class=\"error\">$error</span>";
-        }
-        $_SESSION['si_form']['error'] = true; //kolla om behövs?
       }
     }
   }
@@ -129,6 +117,7 @@
           $stmt = $connection->prepare($query);
           $stmt->bind_param("sss", $username, $password, $home_address);
           $stmt->execute();
+          set_user_as_signed_in($username, $home_address);
         }
     }
     }
